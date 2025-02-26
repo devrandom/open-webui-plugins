@@ -4,8 +4,8 @@ author: devrandom
 date: 2024-08-23
 version: 1.0
 license: MIT
-description: A filter that processes user messages and stores them as long term memory by utilizing the mem0 framework together with qdrant and ollama
-requirements: pydantic, ollama, mem0ai.  Based on a plugin written by Anton Nilsson.
+description: A filter that processes user messages and stores them as long term memory by utilizing the mem0 framework together with qdrant and ollama. Based on a plugin written by Anton Nilsson.
+requirements: pydantic, ollama, mem0ai.
 """
 import re
 from typing import List, Optional
