@@ -1,0 +1,21 @@
+[project]
+name = "open-webui-plugins"
+version = "0.1.0"
+description = "Statically defined plugins for open-webui"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic",
+    "mem0ai",
+    "sentence-transformers",
+    "openai",
+    "python-dotenv",
+    "numpy",
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "expensive: marks tests as expensive (requires API calls and may incur costs)",
+]
+addopts = "-m 'not expensive'"
