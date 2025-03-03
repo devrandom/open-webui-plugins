@@ -104,7 +104,7 @@ class Filter:
 
         last_message = all_messages[-1]["content"]
         print("searching for: " + last_message)
-        memories = self.m.search(last_message, user_id=user)
+        memories = self.m.search(last_message, user_id=user)["results"]
 
         if memories:
             fetched_memory = memories[0]["memory"]
@@ -131,6 +131,7 @@ class Filter:
 
     def init_mem_zero(self):
         config = {
+            "version": "v1.1",
             "vector_store": {
                 "provider": "qdrant",
                 "config": {
