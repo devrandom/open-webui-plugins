@@ -73,7 +73,7 @@ class Filter:
     async def inlet(self, body: dict, user: Optional[dict] = None) -> dict:
         print(f"pipe:{__name__}")
 
-        user = self.valves.mem_zero_user
+        user_id = body['metadata']['user_id']
 
         if isinstance(body, str):
             body = json.loads(body)
@@ -94,7 +94,7 @@ class Filter:
                 self.thread.join()
 
             self.thread = threading.Thread(
-                target=self.m.add, kwargs={"messages": message_text, "user_id": user}
+                target=self.m.add, kwargs={"messages": message_text, "user_id": user_id}
             )
 
             print("Text to be processed in to a memory:")
@@ -105,7 +105,7 @@ class Filter:
 
         last_message = all_messages[-1]["content"]
         print("searching for: " + last_message)
-        memories = self.m.search(last_message, user_id=user)["results"]
+        memories = self.m.search(last_message, user_id=user_id)["results"]
 
         if memories:
             fetched_memory = memories[0]["memory"]
@@ -188,3 +188,46 @@ class Filter:
 
         m = Memory.from_config(config)
         return m
+
+
+def main():
+    """
+    Command-line utility to dump all memories using Memory.get_all function.
+    Prints one line per memory and gets all memories if user not specified.
+    """
+    import argparse
+    import json
+    from datetime import datetime
+
+    parser = argparse.ArgumentParser(description="Dump memories from mem0 storage")
+    parser.add_argument("--user", default=None, help="User ID to retrieve memories for (default: all users)")
+    parser.add_argument("--format", choices=["json", "text"], default="text",
+                      help="Output format (json or text)")
+    args = parser.parse_args()
+    
+    # Initialize memory system using the same config as the Filter class
+    filt = Filter()
+    m = filt.init_mem_zero()
+    
+    # Get all memories, optionally filtered by user_id
+    if args.user:
+        all_memories = m.get_all(user_id=args.user)["results"]
+    else:
+        all_memories = m.get_all()["results"]
+        
+    if args.format == "json":
+        print(json.dumps(all_memories, indent=2))
+    else:
+        if not all_memories:
+            print("No memories found")
+        else:
+            # Print one line per memory
+            for memory in all_memories:
+                # parse created_at from 2025-03-04T14:23:11.157114-08:00
+                dt = datetime.strptime(memory["created_at"], "%Y-%m-%dT%H:%M:%S.%f%z")
+                dt = dt.replace(tzinfo=None).isoformat('T', "seconds")
+                print(f"{memory['user_id']}|{dt}|{memory['memory']}")
+
+
+if __name__ == "__main__":
+    main()
