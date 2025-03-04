@@ -12,8 +12,8 @@ def test_extract():
     message = "I'm John Doe, and I'd like to return the shoes I bought last week."
     result = chat(client, message, EXTRACT_PROMPT)
     expected_facts = [
-        "Customer name: John Doe",
-        "Wants to return shoes",
+        "User name is John Doe",
+        "User wants to return shoes",
         "Purchase made last week"
     ]
     assert semantic_match_multi(expected_facts,
@@ -35,10 +35,10 @@ def test_extract():
     message = "My name is Jane Smith, I ordered product XYZ-123 on May 15th, and you can reach me at jane@example.com."
     result = chat(client, message, EXTRACT_PROMPT)
     expected_facts = [
-        "Customer name: Jane Smith",
-        "Ordered product XYZ-123",
+        "User name is Jane Smith",
+        "User ordered product XYZ-123",
         "Order date: May 15th",
-        "Email: jane@example.com"
+        "User Email: jane@example.com"
     ]
     assert semantic_match_multi(expected_facts,
                                 result["facts"]), f"Failed on multiple facts: {result['facts']}"
