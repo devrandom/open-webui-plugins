@@ -152,7 +152,7 @@ class Filter:
                     "model": self.valves.ollama_llm_model,
                     "temperature": self.valves.ollama_llm_temperature,
                     "max_tokens": self.valves.ollama_llm_tokens,
-                    "url": self.valves.ollama_llm_url,
+                    "ollama_base_url": self.valves.ollama_llm_url,
                 },
             }
         elif self.valves.llm_provider == "openai":
@@ -173,7 +173,7 @@ class Filter:
                 "provider": "ollama",
                 "config": {
                     "model": self.valves.ollama_embedder_model,
-                    "url": self.valves.ollama_embedder_url,
+                    "ollama_base_url": self.valves.ollama_embedder_url,
                 },
             }
         elif self.valves.embedder_provider == "openai":

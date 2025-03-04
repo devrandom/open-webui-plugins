@@ -12,6 +12,7 @@ dependencies = [
     "python-dotenv",
     "numpy",
     "pytest",
+    "ollama",
 ]
 
 [tool.pytest.ini_options]
