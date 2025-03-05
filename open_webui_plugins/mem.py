@@ -74,6 +74,7 @@ class Filter:
         print(f"pipe:{__name__}")
 
         user_id = body['metadata']['user_id']
+        chat_id = body['metadata']['chat_id']
 
         if isinstance(body, str):
             body = json.loads(body)
@@ -93,9 +94,13 @@ class Filter:
                 print("Waiting for previous memory to be done")
                 self.thread.join()
 
-            self.thread = threading.Thread(
-                target=self.m.add, kwargs={"messages": message_text, "user_id": user_id}
-            )
+            add_args = {
+                "messages": message_text,
+                "user_id": user_id,
+                "metadata": {"chat_id": chat_id}
+            }
+
+            self.thread = threading.Thread(target=self.m.add, kwargs=add_args)
 
             print("Text to be processed in to a memory:")
             print(message_text)
