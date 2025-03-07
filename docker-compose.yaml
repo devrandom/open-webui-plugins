@@ -1,0 +1,40 @@
+services:
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    volumes:
+        - qdrant:/qdrant/storage
+  open-webui:
+    build:
+      context: ../open-webui
+      additional_contexts:
+        plugins: .
+      dockerfile: Dockerfile
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    volumes:
+      - open-webui:/app/backend/data
+    ports:
+      - ${OPEN_WEBUI_PORT-8380}:8080
+    environment:
+      - 'OLLAMA_BASE_URL=http://host.docker.internal:11434'
+      - 'WEBUI_SECRET_KEY='
+      - 'OPEN_WEBUI_PLUGINS=open_webui_plugins'
+      - 'MEM_QDRANT_URL=qdrant'
+      - 'MEM_LLM_PROVIDER=ollama'
+      - 'MEM_EMBEDDER_PROVIDER=ollama'
+      - 'MEM_OLLAMA_LLM_MODEL=deepseek-r1:70b'
+      - 'MEM_VECTOR_STORE_QDRANT_DIMS=768'
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+  admin:
+    image: debian:bookworm
+    profiles: ["admin"]
+    volumes:
+      - qdrant:/data/qdrant
+      - open-webui:/data/open-webui
+
+volumes:
+  open-webui: {}
+  qdrant: {}
